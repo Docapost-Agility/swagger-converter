@@ -132,6 +132,9 @@ const addRequestsGroup = options => {
  * @param {string} [options.queryParams.name]
  * @param {string} [options.queryParams.value]
  * @param {Object} [options.JSONBody]
+ * @param {Object} [options.authentication]
+ * @param {string} [options.authentication.type]
+ * @param {string} [options.authentication.value]
  * 
  * @returns {string} requestId
  */
@@ -162,6 +165,20 @@ const addRequest = options => {
 
     if (options.queryParams) {
         request.request.url += "?" + options.queryParams.map(p => p.name + "=" + p.value).join("&");
+    }
+
+    if(options.authentication && options.authentication.type) {
+        if(options.authentication.type === "bearer") {
+            request.request.auth = {
+                type: "bearer",
+                bearer : [
+                    {
+                        key: "token",
+                        value: options.authentication.value
+                    }
+                ]
+            };
+        }
     }
 
     if (options && options.parentId && itemsContainers[options.parentId]) {

@@ -82,6 +82,9 @@ const addRequestsGroup = options => {
  * @param {string} [options.queryParams.name]
  * @param {string} [options.queryParams.value]
  * @param {Object} [options.JSONBody]
+ * @param {Object} [options.authentication]
+ * @param {string} [options.authentication.type]
+ * @param {string} [options.authentication.value]
  * 
  * @returns {string} requestId
  */

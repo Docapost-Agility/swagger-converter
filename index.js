@@ -75,11 +75,13 @@ module.exports = options => {
             value: swaggerJson.basePath
         });
 
-
-        const swaggerGroupId = converter.addRequestsGroup({
-            name: name,
-            parentId: workspaceId,
-        });
+        let swaggerGroupId = null;
+        if(!!name || swaggers.length > 1) {
+            swaggerGroupId = converter.addRequestsGroup({
+                name: name,
+                parentId: workspaceId,
+            });
+        }
 
         // Request tags groups
         const groups = {};
@@ -87,7 +89,7 @@ module.exports = options => {
             for (const tag of swaggerJson.tags) {
                 const groupId = converter.addRequestsGroup({
                     name: tag.name,
-                    parentId: swaggerGroupId,
+                    parentId: swaggerGroupId || workspaceId,
                     description: tag.description,
                 });
                 groups[tag.name] = { id: groupId, children: {} };
@@ -115,7 +117,7 @@ module.exports = options => {
                     };
                     if (!path.includes('/public')) {
                         resource.authentication = {
-                            "token": converter.toEnvironmentVar("jwt_token"),
+                            "value": converter.toEnvironmentVar("jwt_token"),
                             "type": "bearer"
                         };
                     }

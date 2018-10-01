@@ -145,8 +145,10 @@ const addRequestsGroup = options => {
  * @param {Object[]} [options.queryParams]
  * @param {string} [options.queryParams.name]
  * @param {string} [options.queryParams.value]
- * 
  * @param {Object} [options.authentication]
+ * @param {string} [options.authentication.type]
+ * @param {string} [options.authentication.value]
+
  * 
  * @returns {string} requestId
  */
@@ -168,9 +170,18 @@ const addRequest = options => {
         "method": options.method,
         "parameters": options.queryParams || [],
         "_type": "request",
-        "authentication": options.authentication || {},
 
     };
+
+    if(options.authentication && options.authentication.type) {
+        if(options.authentication.type === "bearer") {
+            request.authentication = {
+                type: options.authentication.type,
+                token: options.authentication.value
+            }
+        }
+    }
+
     if (options.JSONBody) {
         request.body = {
             "mimeType": "application/json",
