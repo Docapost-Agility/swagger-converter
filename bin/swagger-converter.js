@@ -8,6 +8,7 @@ const InsomniaConverter = require("../converters/InsomniaConverter");
 let entryFile = null;
 let entryUrl = null;
 let entryClient = null;
+let entryName = null;
 
 for (const [index, value] of process.argv.entries()) {
   if (["-f", "-F", "-file"].includes(value) && process.argv[index + 1]) {
@@ -18,6 +19,9 @@ for (const [index, value] of process.argv.entries()) {
   }
   if (["-c", "-C", "-converter"].includes(value) && process.argv[index + 1]) {
     entryClient = process.argv[index + 1];
+  }
+  if (["-n", "-N", "-name"].includes(value) && process.argv[index + 1]) {
+    entryName = process.argv[index + 1];
   }
 }
 
@@ -32,11 +36,11 @@ const convert = json => {
       converter({
         swaggers: [
           {
-            name: "",
+            name: entryName || "",
             json: json
           }
         ],
-        converter: entryClient === 'insomnia' ? InsomniaConverter : PostmanConverter
+        converter: entryClient === 'postman' ? PostmanConverter : InsomniaConverter,
       })
     )
   );

@@ -1,0 +1,2156 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "da-ged is the web ",
+        "version": "1.3.1",
+        "title": "da-ged REST API",
+        "termsOfService": "Terms of service",
+        "contact": {
+            "name": "Equipe Dev @ Docapost Agility",
+            "email": "equipedev@smartpanda.com"
+        },
+        "license": { "name": "Proprietary" }
+    },
+    "host": "localhost:8081",
+    "basePath": "/",
+    "tags": [
+        { "name": "Compte/Account" },
+        { "name": "Corbeille/Trash" },
+        { "name": "Dossiers/Folders" },
+        { "name": "Fichiers/Files" },
+        { "name": "Nodes" },
+        { "name": "Téléchargement/Download" }
+    ],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "securityDefinitions": {
+        "Bearer": { "type": "apiKey", "name": "Authorization", "in": "header" }
+    },
+    "paths": {
+        "/api/accounts": {
+            "get": {
+                "tags": ["Compte/Account"],
+                "summary": "getMyAccount",
+                "operationId": "getMyAccountUsingGET",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/AccountResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/accounts/{accountId}": {
+            "patch": {
+                "tags": ["Compte/Account"],
+                "summary": "Use this route to update the offer of the account",
+                "description": "This route will update the account with the given JSON.",
+                "operationId": "patchAccountUsingPATCH",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "accountId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "accountResource",
+                        "description": "accountResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/AccountResource" }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "204": { "description": "The account has been updated" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "The user is not authorized to change this offer",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/files": {
+            "get": {
+                "tags": ["Fichiers/Files"],
+                "summary": "getAllFilesForUser",
+                "operationId": "getAllFilesForUserUsingGET",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": { "$ref": "#/definitions/FileResource" }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "post": {
+                "tags": ["Fichiers/Files"],
+                "summary": "fileUpload",
+                "operationId": "fileUploadUsingPOST",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/FileResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/files/{fileId}": {
+            "get": {
+                "tags": ["Fichiers/Files"],
+                "summary": "getFile",
+                "operationId": "getFileUsingGET",
+                "parameters": [
+                    {
+                        "name": "alt",
+                        "in": "query",
+                        "description": "alt",
+                        "required": false,
+                        "type": "string",
+                        "default": "data"
+                    },
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "type": "object" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "delete": {
+                "tags": ["Fichiers/Files"],
+                "summary": "delete",
+                "operationId": "deleteUsingDELETE",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "patch": {
+                "tags": ["Fichiers/Files"],
+                "summary": "patch",
+                "operationId": "patchUsingPATCH",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "fileResource",
+                        "description": "fileResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/FileResource" }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/files/{fileId}/copy": {
+            "post": {
+                "tags": ["Fichiers/Files"],
+                "summary": "copyFile",
+                "operationId": "copyFileUsingPOST",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "nodeCopy",
+                        "description": "nodeCopy",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/NodeCopyResource" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/FileResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/files/{fileId}/preview": {
+            "get": {
+                "tags": ["Fichiers/Files"],
+                "summary": "getPreview",
+                "operationId": "getPreviewUsingGET",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "type": "object" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders": {
+            "post": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "createFolder",
+                "operationId": "createFolderUsingPOST",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "folderResource",
+                        "description": "folderResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/FolderResource" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/NodeResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/root": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getRootFolder",
+                "operationId": "getRootFolderUsingGET",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/FolderResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/root/breadcrumb": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getRootBreadCrumb",
+                "operationId": "getRootBreadCrumbUsingGET",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/BreadCrumbResource"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/root/files": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getRootFiles",
+                "operationId": "getRootFilesUsingGET",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/Page«FileResource»" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/root/folders": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getRootFolders",
+                "operationId": "getRootFoldersUsingGET",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Page«FolderResource»"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/{folderId}": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getFolder",
+                "operationId": "getFolderUsingGET",
+                "parameters": [
+                    {
+                        "name": "alt",
+                        "in": "query",
+                        "description": "alt",
+                        "required": false,
+                        "type": "string",
+                        "default": "data"
+                    },
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "type": "object" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "delete": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "deleteFolder",
+                "operationId": "deleteFolderUsingDELETE",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "patch": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "patch",
+                "operationId": "patchUsingPATCH_1",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "folderResource",
+                        "description": "folderResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/FolderResource" }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/{folderId}/breadcrumb": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getBreadCrumb",
+                "operationId": "getBreadCrumbUsingGET",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/BreadCrumbResource"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/{folderId}/copy": {
+            "post": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "copyFolder",
+                "operationId": "copyFolderUsingPOST",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "nodeCopy",
+                        "description": "nodeCopy",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/NodeCopyResource" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/FolderResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/{folderId}/files": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getFiles",
+                "operationId": "getFilesUsingGET",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/Page«FileResource»" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "post": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "uploadFileInFolder",
+                "operationId": "uploadFileInFolderUsingPOST",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/FileResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/folders/{folderId}/folders": {
+            "get": {
+                "tags": ["Dossiers/Folders"],
+                "summary": "getFolders",
+                "operationId": "getFoldersUsingGET",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Page«FolderResource»"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/nodes/archive": {
+            "post": {
+                "tags": ["Dossiers/Folders", "Fichiers/Files"],
+                "summary": "createArchive",
+                "operationId": "createArchiveUsingPOST",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "multipleDownloadResource",
+                        "description": "multipleDownloadResource",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MultipleDownloadResource"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DownloadNodeResource"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/nodes/root/children": {
+            "get": {
+                "tags": ["Dossiers/Folders", "Fichiers/Files"],
+                "summary": "getRootChildren",
+                "operationId": "getRootChildrenUsingGET",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResourcesContainer«NodeResource»"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/nodes/{folderId}/children": {
+            "get": {
+                "tags": ["Dossiers/Folders", "Fichiers/Files"],
+                "summary": "getChildren",
+                "operationId": "getChildrenUsingGET",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResourcesContainer«NodeResource»"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/public/download/archive/{encrypt_token}": {
+            "get": {
+                "tags": ["Téléchargement/Download"],
+                "summary": "getArchive",
+                "operationId": "getArchiveUsingGET",
+                "parameters": [
+                    {
+                        "name": "encrypt_token",
+                        "in": "path",
+                        "description": "encrypt_token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StreamingResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                }
+            }
+        },
+        "/api/public/download/files/{encrypt_token}": {
+            "get": {
+                "tags": ["Téléchargement/Download"],
+                "summary": "downloadFile",
+                "operationId": "downloadFileUsingGET",
+                "parameters": [
+                    {
+                        "name": "encrypt_token",
+                        "in": "path",
+                        "description": "encrypt_token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StreamingResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                }
+            }
+        },
+        "/api/public/download/folders/{encrypt_token}": {
+            "get": {
+                "tags": ["Téléchargement/Download"],
+                "summary": "getFolder",
+                "operationId": "getFolderUsingGET_1",
+                "parameters": [
+                    {
+                        "name": "encrypt_token",
+                        "in": "path",
+                        "description": "encrypt_token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StreamingResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                }
+            }
+        },
+        "/api/public/download/share/{encrypt_token}": {
+            "get": {
+                "tags": ["Téléchargement/Download"],
+                "summary": "getShare",
+                "operationId": "getShareUsingGET",
+                "parameters": [
+                    {
+                        "name": "encrypt_token",
+                        "in": "path",
+                        "description": "encrypt_token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StreamingResponseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                }
+            }
+        },
+        "/api/trash": {
+            "delete": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "deleteAll",
+                "operationId": "deleteAllUsingDELETE",
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/trash/files": {
+            "get": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "getDeletedFiles",
+                "operationId": "getDeletedFilesUsingGET",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/Page«FileResource»" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/trash/files/{fileId}": {
+            "delete": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "deleteFile",
+                "operationId": "deleteFileUsingDELETE",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "patch": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "restoreFile",
+                "operationId": "restoreFileUsingPATCH",
+                "parameters": [
+                    {
+                        "name": "fileId",
+                        "in": "path",
+                        "description": "fileId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "fileResource",
+                        "description": "fileResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/FileResource" }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/trash/folders": {
+            "get": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "getDeletedFolders",
+                "operationId": "getDeletedFoldersUsingGET",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "paged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.sorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "sort.unsorted",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "unpaged",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Page«FolderResource»"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        },
+        "/api/trash/folders/{folderId}": {
+            "delete": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "deleteNode",
+                "operationId": "deleteNodeUsingDELETE",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "OK" },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            },
+            "patch": {
+                "tags": ["Corbeille/Trash"],
+                "summary": "restoreFolder",
+                "operationId": "restoreFolderUsingPATCH",
+                "parameters": [
+                    {
+                        "name": "folderId",
+                        "in": "path",
+                        "description": "folderId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "folderResource",
+                        "description": "folderResource",
+                        "required": true,
+                        "schema": { "$ref": "#/definitions/FolderResource" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": { "$ref": "#/definitions/NodeResource" }
+                    },
+                    "400": {
+                        "description": "Bad request - Data is invalid. Please look at the detail of the error to correct the request",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The user is not authorized to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "403": {
+                        "description": "Forbidden - The user has not the right to access this resource",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    },
+                    "500": {
+                        "description": "Internal server error - Please send us the error response at equipedev@docapost-agility.fr",
+                        "schema": { "$ref": "#/definitions/Error" }
+                    }
+                },
+                "security": [{ "Bearer": ["global"] }]
+            }
+        }
+    },
+    "definitions": {
+        "AccountResource": {
+            "type": "object",
+            "properties": {
+                "additionalSpace": { "type": "integer", "format": "int64" },
+                "availableSpace": { "type": "integer", "format": "int64" },
+                "created": { "type": "string", "format": "date-time" },
+                "deleted": { "type": "boolean" },
+                "id": { "type": "integer", "format": "int64" },
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "offerId": { "type": "integer", "format": "int64" },
+                "owner": { "type": "integer", "format": "int64" },
+                "updated": { "type": "string", "format": "date-time" },
+                "usedSpace": { "type": "integer", "format": "int64" }
+            },
+            "title": "AccountResource",
+            "description": "Account representation"
+        },
+        "BreadCrumbResource": {
+            "type": "object",
+            "properties": {
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "nodeId": { "type": "integer", "format": "int64" },
+                "nodeName": { "type": "string" }
+            },
+            "title": "BreadCrumbResource"
+        },
+        "DownloadNodeResource": {
+            "type": "object",
+            "properties": {
+                "downloadUrl": { "type": "string" },
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                }
+            },
+            "title": "DownloadNodeResource"
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "application": { "type": "string" },
+                "code": { "type": "string" },
+                "detail": { "type": "string" },
+                "message": { "type": "string" },
+                "version": { "type": "string" }
+            },
+            "title": "Error"
+        },
+        "FileResource": {
+            "type": "object",
+            "properties": {
+                "created": { "type": "string", "format": "date-time" },
+                "deleted": { "type": "boolean" },
+                "erasable": { "type": "boolean" },
+                "id": { "type": "integer", "format": "int64" },
+                "identifierKey": { "type": "string" },
+                "inheritedNotErasable": { "type": "boolean" },
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "mimeType": { "type": "string" },
+                "name": { "type": "string" },
+                "owner": { "type": "integer", "format": "int64" },
+                "parent": { "$ref": "#/definitions/ParentResource" },
+                "rights": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": { "type": "boolean" }
+                    }
+                },
+                "size": { "type": "integer", "format": "int64" },
+                "thumbnail": { "type": "string" },
+                "unread": { "type": "boolean" },
+                "updated": { "type": "string", "format": "date-time" }
+            },
+            "title": "FileResource"
+        },
+        "FolderResource": {
+            "type": "object",
+            "properties": {
+                "created": { "type": "string", "format": "date-time" },
+                "deleted": { "type": "boolean" },
+                "erasable": { "type": "boolean" },
+                "id": { "type": "integer", "format": "int64" },
+                "identifierKey": { "type": "string" },
+                "inheritedNotErasable": { "type": "boolean" },
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "name": { "type": "string" },
+                "owner": { "type": "integer", "format": "int64" },
+                "parent": { "$ref": "#/definitions/ParentResource" },
+                "rights": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": { "type": "boolean" }
+                    }
+                },
+                "root": { "type": "boolean" },
+                "unread": { "type": "boolean" },
+                "updated": { "type": "string", "format": "date-time" }
+            },
+            "title": "FolderResource"
+        },
+        "Link": {
+            "type": "object",
+            "properties": {
+                "deprecation": {
+                    "type": "string",
+                    "xml": {
+                        "name": "deprecation",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "href": {
+                    "type": "string",
+                    "xml": {
+                        "name": "href",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "hreflang": {
+                    "type": "string",
+                    "xml": {
+                        "name": "hreflang",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "media": {
+                    "type": "string",
+                    "xml": {
+                        "name": "media",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "rel": {
+                    "type": "string",
+                    "xml": {
+                        "name": "rel",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "templated": { "type": "boolean" },
+                "title": {
+                    "type": "string",
+                    "xml": {
+                        "name": "title",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                },
+                "type": {
+                    "type": "string",
+                    "xml": {
+                        "name": "type",
+                        "attribute": true,
+                        "wrapped": false
+                    }
+                }
+            },
+            "title": "Link"
+        },
+        "Map«string,boolean»": {
+            "type": "object",
+            "title": "Map«string,boolean»",
+            "additionalProperties": { "type": "boolean" }
+        },
+        "MultipleDownloadResource": {
+            "type": "object",
+            "properties": {
+                "filesId": {
+                    "type": "array",
+                    "items": { "type": "integer", "format": "int64" }
+                },
+                "foldersId": {
+                    "type": "array",
+                    "items": { "type": "integer", "format": "int64" }
+                },
+                "format": { "type": "string" },
+                "links": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Link" }
+                }
+            },
+            "title": "MultipleDownloadResource"
+        },
+        "NodeCopyResource": {
+            "type": "object",
+            "properties": {
+                "links": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "name": { "type": "string" },
+                "parent": { "type": "integer", "format": "int64" }
+            },
+            "title": "NodeCopyResource"
+        },
+        "NodeResource": {
+            "type": "object",
+            "properties": {
+                "created": { "type": "string", "format": "date-time" },
+                "deleted": { "type": "boolean" },
+                "erasable": { "type": "boolean" },
+                "id": { "type": "integer", "format": "int64" },
+                "identifierKey": { "type": "string" },
+                "inheritedNotErasable": { "type": "boolean" },
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "name": { "type": "string" },
+                "owner": { "type": "integer", "format": "int64" },
+                "parent": { "$ref": "#/definitions/ParentResource" },
+                "rights": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": { "type": "boolean" }
+                    }
+                },
+                "unread": { "type": "boolean" },
+                "updated": { "type": "string", "format": "date-time" }
+            },
+            "title": "NodeResource"
+        },
+        "Pageable": {
+            "type": "object",
+            "properties": {
+                "offset": { "type": "integer", "format": "int64" },
+                "pageNumber": { "type": "integer", "format": "int32" },
+                "pageSize": { "type": "integer", "format": "int32" },
+                "paged": { "type": "boolean" },
+                "sort": { "$ref": "#/definitions/Sort" },
+                "unpaged": { "type": "boolean" }
+            },
+            "title": "Pageable"
+        },
+        "Page«FileResource»": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/FileResource" }
+                },
+                "first": { "type": "boolean" },
+                "last": { "type": "boolean" },
+                "number": { "type": "integer", "format": "int32" },
+                "numberOfElements": { "type": "integer", "format": "int32" },
+                "pageable": { "$ref": "#/definitions/Pageable" },
+                "size": { "type": "integer", "format": "int32" },
+                "sort": { "$ref": "#/definitions/Sort" },
+                "totalElements": { "type": "integer", "format": "int64" },
+                "totalPages": { "type": "integer", "format": "int32" }
+            },
+            "title": "Page«FileResource»"
+        },
+        "Page«FolderResource»": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/FolderResource" }
+                },
+                "first": { "type": "boolean" },
+                "last": { "type": "boolean" },
+                "number": { "type": "integer", "format": "int32" },
+                "numberOfElements": { "type": "integer", "format": "int32" },
+                "pageable": { "$ref": "#/definitions/Pageable" },
+                "size": { "type": "integer", "format": "int32" },
+                "sort": { "$ref": "#/definitions/Sort" },
+                "totalElements": { "type": "integer", "format": "int64" },
+                "totalPages": { "type": "integer", "format": "int32" }
+            },
+            "title": "Page«FolderResource»"
+        },
+        "ParentResource": {
+            "type": "object",
+            "properties": {
+                "id": { "type": "integer", "format": "int64" },
+                "identifierKey": { "type": "string" },
+                "name": { "type": "string" }
+            },
+            "title": "ParentResource"
+        },
+        "ResourcesContainer«NodeResource»": {
+            "type": "object",
+            "properties": {
+                "links": {
+                    "type": "array",
+                    "xml": {
+                        "name": "link",
+                        "namespace": "http://www.w3.org/2005/Atom",
+                        "attribute": false,
+                        "wrapped": false
+                    },
+                    "items": { "$ref": "#/definitions/Link" }
+                },
+                "page": { "type": "integer", "format": "int64" },
+                "resources": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/NodeResource" }
+                },
+                "size": { "type": "integer", "format": "int64" },
+                "totalPages": { "type": "integer", "format": "int64" },
+                "totalSize": { "type": "integer", "format": "int64" }
+            },
+            "title": "ResourcesContainer«NodeResource»"
+        },
+        "Sort": {
+            "type": "object",
+            "properties": {
+                "sorted": { "type": "boolean" },
+                "unsorted": { "type": "boolean" }
+            },
+            "title": "Sort"
+        },
+        "StreamingResponseBody": {
+            "type": "object",
+            "title": "StreamingResponseBody"
+        }
+    }
+}

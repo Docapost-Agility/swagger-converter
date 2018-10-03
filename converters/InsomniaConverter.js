@@ -1,4 +1,3 @@
-
 const PREFIX_WORKSPACE = "wrk_";
 const PREFIX_ENV = "env_";
 const PREFIX_GROUP = "fld_";
@@ -11,7 +10,7 @@ const generateId = () => {
         id += k[Math.floor(Math.random() * 10)];
     }
     return id;
-}
+};
 
 let insomiaJson = null;
 let workspaceId = null;
@@ -22,20 +21,19 @@ let defaultEnv = null;
  */
 const create = () => {
     insomiaJson = {
-        "_type": "export",
-        "__export_format": 3,
-        "resources": []
-    }
+        _type: "export",
+        __export_format: 3,
+        resources: []
+    };
 };
 
-
 /**
- * 
+ *
  * Add a Workspace
- * 
+ *
  * @param {Object} [options]
  * @param {string} [options.name=New Workspace]
- * 
+ *
  * @returns {string} workspaceId
  */
 const createWorkspace = options => {
@@ -44,73 +42,60 @@ const createWorkspace = options => {
     }
     workspaceId = PREFIX_WORKSPACE + generateId();
     insomiaJson.resources.push({
-        "_id": workspaceId,
-        "name": options && options.name || "New Workspace",
-        "_type": "workspace",
+        _id: workspaceId,
+        name: (options && options.name) || "New Workspace",
+        _type: "workspace"
     });
     return workspaceId;
 };
 
-/**
- * 
- * Create an environment for the current workspace
- * 
- * @param {Object} options 
- * @param {string} [options.name=Default Environment]
- * @param {Object} [options.data]
- */
-const createEnvironment = options => {
+const createEnvironment = () => {
     if (!workspaceId) {
         createWorkspace();
     }
-    const defaultEnvId = PREFIX_ENV + generateId();
     defaultEnv = {
-        "_id": defaultEnvId,
-        "isPrivate": false,
-        "name": options && options.name || "Default Environment",
-        "parentId": workspaceId,
-        "_type": "environment",
-        "data": options && options.data || {},
+        _id: PREFIX_ENV + generateId(),
+        isPrivate: false,
+        parentId: workspaceId,
+        _type: "environment",
+        data: {}
     };
     insomiaJson.resources.push(defaultEnv);
 };
 
 /**
- * 
- * Add data to worspace's environment
- * 
- * @param {Object} options 
- * @param {string} options.key
- * @param {string} [options.value]
+ *
+ * Add data to workspace's variables
+ *
+ * @param {Object} data
+ * @param {string} [data[x]]
  */
-const addEnvironmentData = options => {
+const addGlobalVars = data => {
     if (!defaultEnv) {
         createEnvironment();
     }
-    if (options && options.key) {
-        defaultEnv.data[options.key] = options.value;
-    }
+    Object.assign(defaultEnv.data, data);
 };
 
 /**
- * 
- * @param {string} key 
- * 
+ *
+ * @param {string} key
+ *
  * @return {string} environmentVariablePattern
  */
 const toEnvironmentVar = key => {
-    return `{{${key}}}`
+    return `{{${key}}}`;
 };
 
 /**
- * 
+ *
  * Add a requests' group to current workspace
- * 
- * @param {Object} options 
+ *
+ * @param {Object} options
  * @param {string} [options.name=Requests Group]
  * @param {string} [options.description]
  * @param {string} [options.parentId]
- * 
+ *
  * @returns {string} requestsGroupId
  */
 const addRequestsGroup = options => {
@@ -122,14 +107,14 @@ const addRequestsGroup = options => {
     }
     const requestsGroupId = PREFIX_GROUP + generateId();
     insomiaJson.resources.push({
-        "_id": requestsGroupId,
-        "name": options.name || "Requests Group",
-        "description": options.description || "",
-        "parentId": options.parentId || workspaceId,
-        "_type": "request_group"
+        _id: requestsGroupId,
+        name: options.name || "Requests Group",
+        description: options.description || "",
+        parentId: options.parentId || workspaceId,
+        _type: "request_group"
     });
     return requestsGroupId;
-}
+};
 
 /**
  * 
@@ -161,70 +146,83 @@ const addRequest = options => {
     }
     const requestId = PREFIX_REQUEST + generateId();
     let request = {
-        "_id": requestId,
-        "description": options.description || "",
-        "parentId": options.parentId || workspaceId,
-        "isPrivate": false,
-        "name": options.name || "Request",
-        "url": options.url,
-        "method": options.method,
-        "parameters": options.queryParams || [],
-        "_type": "request",
-
+        _id: requestId,
+        description: options.description || "",
+        parentId: options.parentId || workspaceId,
+        isPrivate: false,
+        name: options.name || "Request",
+        url: options.url,
+        method: options.method,
+        parameters: options.queryParams || [],
+        _type: "request"
     };
 
-    if(options.authentication && options.authentication.type) {
-        if(options.authentication.type === "bearer") {
+    if (options.authentication && options.authentication.type) {
+        if (options.authentication.type === "bearer") {
             request.authentication = {
                 type: options.authentication.type,
                 token: options.authentication.value
-            }
+            };
         }
     }
 
     if (options.JSONBody) {
         request.body = {
-            "mimeType": "application/json",
-            "text": JSON.stringify(options.JSONBody, null, "\t")
+            mimeType: "application/json",
+            text: JSON.stringify(options.JSONBody, null, "\t")
         };
     }
     insomiaJson.resources.push(request);
     return requestId;
-}
+};
 
 /**
  * Merge requests groups when a group only have a single group as child
  */
 const mergeRequestsGroupWithOneChild = () => {
     let idsToRemove = [];
-    let subGroupResources = insomiaJson.resources.filter(r => r._id.startsWith(PREFIX_GROUP) && r.parentId !== workspaceId/* && !swaggersGroupsIds.includes(r.parentId)*/);
+    let subGroupResources = insomiaJson.resources.filter(
+        r =>
+            r._id.startsWith(PREFIX_GROUP) &&
+            r.parentId !==
+                workspaceId /* && !swaggersGroupsIds.includes(r.parentId)*/
+    );
     for (let group of subGroupResources) {
-        const children = insomiaJson.resources.filter(g => g.parentId === group._id);
+        const children = insomiaJson.resources.filter(
+            g => g.parentId === group._id
+        );
         if (children.length === 1 && children[0]._id.startsWith(PREFIX_GROUP)) {
             children[0].name = group.name + "/" + children[0].name;
             children[0].parentId = group.parentId;
             idsToRemove.push(group._id);
         }
     }
-    insomiaJson.resources = insomiaJson.resources.filter(g => !idsToRemove.includes(g._id));
-}
+    insomiaJson.resources = insomiaJson.resources.filter(
+        g => !idsToRemove.includes(g._id)
+    );
+};
 
 /**
  * Reorder requests and groups if needed
  */
 const reorder = () => {
-    insomiaJson.resources.sort((a, b) => a._id.startsWith(PREFIX_REQUEST) && !b._id.startsWith(PREFIX_REQUEST) ? 1 : 0);
-}
+    insomiaJson.resources.sort(
+        (a, b) =>
+            a._id.startsWith(PREFIX_REQUEST) &&
+            !b._id.startsWith(PREFIX_REQUEST)
+                ? 1
+                : 0
+    );
+};
 
 module.exports = {
     create: create,
     createWorkspace: createWorkspace,
-    createEnvironment: createEnvironment,
-    addEnvironmentData: addEnvironmentData,
+    addGlobalVars: addGlobalVars,
     toEnvironmentVar: toEnvironmentVar,
     addRequestsGroup: addRequestsGroup,
     addRequest: addRequest,
     mergeRequestsGroupWithOneChild: mergeRequestsGroupWithOneChild,
     reorder: reorder,
     get: () => insomiaJson
-}
+};

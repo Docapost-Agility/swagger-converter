@@ -22,26 +22,13 @@ const createWorkspace = options => {
 
 /**
  * 
- * Create an environment for the current workspace
+ * Add data to workspace's variables
  * 
- * @param {Object} options 
- * @param {string} [options.name]
- * @param {Object} [options.data]
+ * @param {Object} data 
+ * @param {string} [data[x]]
  */
-const createEnvironment = options => {
-    throw new Error('ConverterInterface.createEnvironment not implemented');
-};
-
-/**
- * 
- * Add data to worspace's environment
- * 
- * @param {Object} options 
- * @param {string} options.key
- * @param {string} [options.value]
- */
-const addEnvironmentData = options => {
-    throw new Error('ConverterInterface.addEnvironmentData not implemented');
+const addGlobalVars = data => {
+    throw new Error('ConverterInterface.addGlobalVars not implemented');
 };
 
 /**
@@ -114,8 +101,7 @@ const get = () => {
 module.exports = {
     create: create,
     createWorkspace: createWorkspace,
-    createEnvironment: createEnvironment,
-    addEnvironmentData: addEnvironmentData,
+    addGlobalVars: addGlobalVars,
     toEnvironmentVar: toEnvironmentVar,
     addRequestsGroup: addRequestsGroup,
     addRequest: addRequest,

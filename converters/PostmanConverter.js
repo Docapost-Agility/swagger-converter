@@ -1,9 +1,10 @@
 const generateUuid = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
-}
+};
 
 let postmanExport = null;
 let itemsContainers = {};
@@ -15,18 +16,18 @@ const create = () => {
     postmanExport = {
         info: {},
         item: [],
-        variable: [],
-    }
+        variable: []
+    };
 };
 
 /**
- * 
+ *
  * Add a Workspace
- * 
+ *
  * @param {Object} [options]
  * @param {string} [options.name=New Workspace]
  * @param {string} [options.description]
- * 
+ *
  * @returns {string} workspaceId
  */
 const createWorkspace = options => {
@@ -35,67 +36,61 @@ const createWorkspace = options => {
     }
     postmanExport.id = generateUuid();
     postmanExport.info = {
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "name": options && options.name || "New Collection"
-    }
+        schema:
+            "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        name: (options && options.name) || "New Collection"
+    };
     itemsContainers[postmanExport.id] = postmanExport;
     return postmanExport.id;
 };
 
 /**
- * 
- * Create an environment for the current workspace
- * 
- * @param {Object} options 
- * @param {string} [options.name]
- * @param {Object} [options.data]
+ *
+ * Add data to workspace's variables
+ *
+ * @param {Object} data
+ * @param {string} [data[x]]
  */
-const createEnvironment = options => {
+const addGlobalVars = data => {
     if (!postmanExport) {
         create();
     }
-    postmanExport.variable = options && options.data && Object.keys(options.data).map(k => ({ key: k, value: options.data[k] })) || [];
-};
-
-/**
- * 
- * Add data to worspace's environment
- * 
- * @param {Object} options 
- * @param {string} options.key
- * @param {string} [options.value]
- */
-const addEnvironmentData = options => {
-    if (!postmanExport.variable) {
-        createEnvironment();
-    }
-    if (options && options.key) {
-        postmanExport.variable.push({
-            "key": options.key,
-            "value": options.value
-        });
+    if (data) {
+        for (const key of Object.keys(data)) {
+            const currentValue = postmanExport.variable.filter(
+                v => v.key === key
+            );
+            if (currentValue[0]) {
+                currentValue[0].value = data[key];
+            } else {
+                postmanExport.variable.push({
+                    key: key,
+                    value: data[key]
+                });
+            }
+        }
     }
 };
 
 /**
- * 
- * @param {string} key 
- * 
+ *
+ * @param {string} key
+ *
  * @return {string} environmentVariablePattern
  */
 const toEnvironmentVar = key => {
-    return `{{${key}}}`
+    return `{{${key}}}`;
 };
 
 /**
- * 
+ *
  * Add a requests' group to current workspace
- * 
- * @param {Object} options 
+ *
+ * @param {Object} options
  * @param {string} [options.name]
  * @param {string} [options.description]
  * @param {string} [options.parentId]
- * 
+ *
  * @returns {string} requestsGroupId
  */
 const addRequestsGroup = options => {
@@ -104,11 +99,10 @@ const addRequestsGroup = options => {
     }
     const requestsGroupId = generateUuid();
     const group = {
-        "id": requestsGroupId,
-        "name": options && options.name || "Requests Group",
-        "description": options && options.description || "",
-        "item": []
-
+        id: requestsGroupId,
+        name: (options && options.name) || "Requests Group",
+        description: (options && options.description) || "",
+        item: []
     };
     if (options && options.parentId && itemsContainers[options.parentId]) {
         itemsContainers[options.parentId].item.push(group);
@@ -120,10 +114,10 @@ const addRequestsGroup = options => {
 };
 
 /**
- * 
+ *
  * Add a request to current workspace
- * 
- * @param {Object} options 
+ *
+ * @param {Object} options
  * @param {string} options.url
  * @param {string} [options.name]
  * @param {string} [options.description]
@@ -135,7 +129,7 @@ const addRequestsGroup = options => {
  * @param {Object} [options.authentication]
  * @param {string} [options.authentication.type]
  * @param {string} [options.authentication.value]
- * 
+ *
  * @returns {string} requestId
  */
 const addRequest = options => {
@@ -147,31 +141,36 @@ const addRequest = options => {
     }
     const requestId = generateUuid();
     let request = {
-        "id": requestId,
-        "description": options.description || "",
-        "name": options.name || "Request",
-        "request": {
-            "url": options.url,
-            "method": options.method,
-        },
+        id: requestId,
+        description: options.description || "",
+        name: options.name || "Request",
+        request: {
+            url: options.url,
+            method: options.method
+        }
     };
     if (options.JSONBody) {
         request.request.body = {};
         request.request.body.mode = "raw";
         request.request.body.raw = JSON.stringify(options.JSONBody, null, "\t");
         request.request.headers = request.request.headers || [];
-        request.request.headers.push({ key: "Content-Type", value: "application/json" });
+        request.request.headers.push({
+            key: "Content-Type",
+            value: "application/json"
+        });
     }
 
     if (options.queryParams) {
-        request.request.url += "?" + options.queryParams.map(p => p.name + "=" + p.value).join("&");
+        request.request.url +=
+            "?" +
+            options.queryParams.map(p => p.name + "=" + p.value).join("&");
     }
 
-    if(options.authentication && options.authentication.type) {
-        if(options.authentication.type === "bearer") {
+    if (options.authentication && options.authentication.type) {
+        if (options.authentication.type === "bearer") {
             request.request.auth = {
                 type: "bearer",
-                bearer : [
+                bearer: [
                     {
                         key: "token",
                         value: options.authentication.value
@@ -193,7 +192,6 @@ const addRequest = options => {
  * Merge requests groups when a group only have a single group as child
  */
 const mergeRequestsGroupWithOneChild = () => {
-
     reduceChildren = container => {
         for (const group of container.item) {
             if (group.item) {
@@ -210,7 +208,7 @@ const mergeRequestsGroupWithOneChild = () => {
                 }
             }
         }
-    }
+    };
 
     for (const mainGroup of postmanExport.item) {
         reduceChildren(mainGroup);
@@ -220,7 +218,7 @@ const mergeRequestsGroupWithOneChild = () => {
 /**
  * Reorder requests and groups if needed
  */
-const reorder = () => { };
+const reorder = () => {};
 
 /**
  * Return the export
@@ -230,12 +228,11 @@ const get = () => postmanExport;
 module.exports = {
     create: create,
     createWorkspace: createWorkspace,
-    createEnvironment: createEnvironment,
-    addEnvironmentData: addEnvironmentData,
+    addGlobalVars: addGlobalVars,
     toEnvironmentVar: toEnvironmentVar,
     addRequestsGroup: addRequestsGroup,
     addRequest: addRequest,
     mergeRequestsGroupWithOneChild: mergeRequestsGroupWithOneChild,
     reorder: reorder,
     get: get
-}
+};
